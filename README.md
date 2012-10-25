@@ -3,7 +3,8 @@ Requirements
 
  - GD Library
  - PHP Version - 5.1.0
- - Use MOD_REWRITE
+ - Use MOD_REWRITE turned ON
+ - Tested on Apache server with mod_rewrite
 
 Usage
 -----
