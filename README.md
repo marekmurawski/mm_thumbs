@@ -10,11 +10,15 @@ Usage
 
 This plugin installs SLIR script in ROOT directory of your Wolf CMS installation. After successful installation of this plugin you can access thumbnails of your photos with:
 
-YOURSITE.COM/thmm/__parameters__/path/to/your/image.jpg
+```
+http://YOURSITE.COM/thmm/__parameters__/path/to/your/image.jpg
+```
 
 Or with short URL starting with slash:
 
+```
 /thmm/__parameters__/path/to/your/image.jpg
+```
 
 To use, place an img tag with the src pointing to the path of "/thmm/" followed by the parameters, followed by the path to the source image to resize. All parameters follow the pattern of a one-letter code and then the parameter value:
 
