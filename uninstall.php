@@ -1,25 +1,44 @@
 <?php
 
-/*
- * Wolf CMS - Content Management Simplified. <http://www.wolfcms.org>
- * Copyright (C) 2008-2010 Martijn van der Kleijn <martijn.niji@gmail.com>
- *
- * This file is part of Wolf CMS. Wolf CMS is licensed under the GNU GPLv3 license.
- * Please see license.txt for the full license text.
- */
-
 /* Security measure */
 if (!defined('IN_CMS')) {
   exit();
 }
 
+error_reporting( -1 );
+set_error_handler( array( 'Error', 'captureNormal' ) );
+set_exception_handler( array( 'Error', 'captureException' ) );
+register_shutdown_function( array( 'Error', 'captureShutdown' ) );
 
+class Error
+{
+    private static $errors = array();
+    
+    public static function captureNormal( $number, $message, $file, $line )
+    { self::$errors[] = '<tr><td>MESSAGE:</td><td>' . $message .'</td></tr>'; }
+    
+    public static function captureException( $exception )
+    {
+        echo '<pre>';
+        print_r( $exception );
+        echo '</pre>';
+    }
+    
+    public static function captureShutdown( )
+    {
+        $error = error_get_last( );
+        if( $error || count(self::$errors)>0 ) {            
+          self::$errors[] = '<tr><td>MESSAGE:</td><td>' . $error['message'] .'</td></tr>';          
+          $message = __('Errors while activating plugin:') .'<table>'. implode(PHP_EOL, self::$errors) . '</table>';
+          Flash::set('error',$message); 
+          echo $message;          
+        } else { 
+          Flash::set('success',__('Successfully activated mmThumbs plugin')); 
+        }
+        
+    }
+}
 
-
-// ------------ lixlpixel recursive PHP functions -------------
-// recursive_remove_directory( directory to delete, empty )
-// expects path to directory and optional TRUE / FALSE to empty
-// ------------------------------------------------------------
 function recursive_remove_directory($directory, $empty = FALSE) {
   if (substr($directory, -1) == '/') {
     $directory = substr($directory, 0, -1);
@@ -48,7 +67,6 @@ function recursive_remove_directory($directory, $empty = FALSE) {
   return TRUE;
 }
 
-// ------------------------------------------------------------
 $rmDir = CMS_ROOT . '/thmm';
 
 recursive_remove_directory($rmDir);
