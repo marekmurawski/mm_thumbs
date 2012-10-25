@@ -1,43 +1,35 @@
-== WHAT IT IS ==
+Requirements
+------------
 
-The mmthumbs plugin serves as a basic plugin template.
+ - GD Library
+ - PHP Version - 5.1.0
+ - Use MOD_REWRITE
 
-This mmthumbs plugin makes use/provides the following features:
-- A controller without a tab
-- Three views (sidebar, documentation and settings)
-- A documentation page
-- A sidebar
-- A settings page (that does nothing except display some text)
-- Code that gets run when the plugin is enabled (enable.php)
+Usage
+-----
 
-== HOW TO USE IT ==
+This plugin installs SLIR script in ROOT directory of your Wolf CMS installation. After successful installation of this plugin you can access thumbnails of your photos with:
 
-* To use the settings and documentation pages, you will first need to enable the
-  plugin!
-* Use the readme.txt file to explain to plugin users how to install the plugin!
-* Use this example layout as a basis.
-* Apart from enable.php, you can also create a disable.php
-* The settings() function in the MmthumbsController.php file demonstrates the
-  use of getAllSettings(). The API also provides getSetting(), setSetting() and
-  setAllSettings().
+http://YOURSITE.COM/thmm/parameters/path/to/your/image.jpg
 
-== NOTES ==
+Or with short URL starting with slash:
 
-* To use the settings and documentation pages, you will first need to enable
-  the plugin!
+/thmm/parameters/path/to/your/image.jpg
 
-* In index.php, change the value of require_wolf_version into a non-existant
-  Wolf version and look at the plugins list (in the administration section)
-  again.
+   To use, place an img tag with the src pointing to the path of "/thmm/"
+   followed by the parameters, followed by the path to the source
+   image to resize. All parameters follow the pattern of a one-letter code and
+   then the parameter value:
+       - Maximum width = w           eg. /thmm/w100/.........
+       - Maximum height = h          eg. /thmm/h100/.........
+       - Crop ratio = c              eg. /thmm/w100-c1:2/....
+       - Quality = q                 eg. /thmm/w200-q85/.....
+       - Background fill color = b   eg. /thmm/bF80/.........
+       - Progressive = p (for JPG)   eg. /thmm/h100-p/.......
 
-* Did you know you can have the controller make a visible tab (or not)? Change
-    Plugin::addController('mmthumbs', 'Mmthumbs', 'administrator', false);
-  to
-    Plugin::addController('mmthumbs', 'Mmthumbs', 'administrator', true);
-  to have the plugin controller create a tab.
-
-== LICENSE ==
-
-Copyright 2008-2009, Martijn van der Kleijn. <martijn.niji@gmail.com>
-This demo plugin is licensed under the GPLv3 License.
-<http://www.gnu.org/licenses/gpl.html>
+   Resizing a JPEG to a max width of 100 pixels and a max height of 100 pixels
+   with proportions 
+   <img src="/thmm/w100-h100/path/to/image.jpg" alt="Alt text" />
+  
+   Resizing and cropping a JPEG into a square:
+   <img src="/thmm/w100-h100-c1:1/path/to/image.jpg" alt="Alt text" />
