@@ -6,8 +6,11 @@ $(document).ready(function() {
   
   $('table#files-list').find('td > img').each(function(){
     //var extension = $(this).attr('src').split('.').pop();
-    var fileType = $(this).attr('src').split('/').pop();
-     if (fileType == 'file-image-16.png') {
+    //var fileType = $(this).attr('src').split('/').pop();
+    var extension = $(this).siblings('a').html().split('.').pop().toLowerCase();
+    //alert (extension);
+    // if (fileType == 'file-image-16.png') {
+     if (extension == 'jpeg' || extension == 'jpg' || extension == 'gif' || extension == 'png') {
        oldSrc = $(this).siblings('a').attr('href');
        pos = oldSrc.indexOf('/file_manager/view/')+19;
        oldSrc = oldSrc.substr(pos);

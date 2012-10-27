@@ -8,7 +8,7 @@ Plugin::setInfos(array(
                         'id' => 'mm_thumbs',
                         'title' => 'mmThumbs',
                         'description' => __('Generates cached resized/cropped pictures.'),
-                        'version' => '0.0.1',
+                        'version' => '0.0.2',
                         'license' => 'GPL',
                         'author' => 'Marek Murawski',
                         'website' => 'http://marekmurawski.pl/',

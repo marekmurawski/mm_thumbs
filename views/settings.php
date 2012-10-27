@@ -61,9 +61,8 @@ if (!defined('IN_CMS')) { exit(); }
 <div style="background-color: #FDB; padding: 16px; margin-left: 32px; margin-top: 16px;">
   <h3>Special URL rewriting case</h3>
 <p>
-  If you're using a method of URL rewriting of Wolf CMS residing in subdirectory, for example in <b>.../public_html/wolfcms/</b> <br/>
-  <b>http://www.yoursite.com/wolfcms/</b> subdirectory, 
-  <br/>but publicly it is accessible via: <br/>
+  If you're using a method of URL rewriting of Wolf CMS residing in subdirectory, for example in <b>.../public_html/wolfcms/</b>
+  but publicly your Wolf installation is accessible via: <br/>
   <b>http://www.yoursite.com/</b> <br/><br/>
   <i>This method is described in this forum topic <a href="http://www.wolfcms.org/forum/topic307.html">http://www.wolfcms.org/forum/topic307.html</a></i>
 </p>
