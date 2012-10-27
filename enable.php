@@ -68,4 +68,19 @@ $destDir = CMS_ROOT . '/thmm';
 
 copyr($srcDir, $destDir);
 
+$data = '
+RewriteEngine On
+RewriteBase '.URI_PUBLIC.'thmm/
+RewriteRule . index.php [L]
+
+# Prevent viewing of the error log file in its default location
+<Files slir-error-log>
+Order Deny,Allow
+Deny from All
+</Files>
+';
+
+
+file_put_contents(CMS_ROOT . '/thmm/.htaccess', $data);
+
 exit();

@@ -82,7 +82,13 @@ if (!defined('IN_CMS')) { exit(); }
 <h2>Playground area</h2>
 <p>Try out typing parameters for this sample image (800x600px) to see live effects of various parameters. You can also click "Randomize!" to create random set of parameters.</p>
 <p style="font-weight: bold;">
-  &lt;img src="/thmm/<input id="params" value="w80"><?php echo URI_PUBLIC . 'wolf/plugins/mm_thumbs/images/sample.jpg' ?>" /&gt;
+  <?php echo CMS_ROOT; ?>
+</p>
+<p style="font-weight: bold;">
+  <?php echo URI_PUBLIC; ?>
+</p>
+<p style="font-weight: bold;">
+  &lt;img src="<?php echo URI_PUBLIC; ?>thmm/<input id="params" value="w80"><?php echo URI_PUBLIC . 'wolf/plugins/mm_thumbs/images/sample.jpg' ?>" /&gt;
 </p>
 <p>
   <input type="button" id="resetImage" value="Reset Image">
@@ -94,7 +100,7 @@ if (!defined('IN_CMS')) { exit(); }
 <script type="text/javascript">
 // <![CDATA[
     var defaultParams = 'w200-h200-c1:1';
-    var defaultImage = '/thmm/'+ defaultParams + '<?php echo URI_PUBLIC . 'wolf/plugins/mm_thumbs/images/sample.jpg' ?>';
+    var defaultImage = '<?php echo URI_PUBLIC; ?>' + 'thmm/'+ defaultParams + '<?php echo URI_PUBLIC . 'wolf/plugins/mm_thumbs/images/sample.jpg' ?>';
     
     String.prototype.trimLastMinus=function(){return this.replace(/-$/,'');};
     
