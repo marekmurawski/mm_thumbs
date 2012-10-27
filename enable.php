@@ -12,7 +12,7 @@ register_shutdown_function( array( 'Error', 'captureShutdown' ) );
 
 class Error
 {
-    private static $errors = array();
+    public static $errors = array();
     
     public static function captureNormal( $number, $message, $file, $line )
     { self::$errors[] = '<tr><td>MESSAGE:</td><td>' . $message .'</td></tr>'; }

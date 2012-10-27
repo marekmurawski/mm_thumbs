@@ -19,9 +19,8 @@ class Error
     
     public static function captureException( $exception )
     {
-        echo '<pre>';
-        print_r( $exception );
-        echo '</pre>';
+        echo '<pre>' . print_r( $exception, true) . '</pre>';
+        self::$errors[] = print_r( $exception, true);
     }
     
     public static function captureShutdown( )
@@ -54,7 +53,7 @@ function recursive_remove_directory($directory, $empty = FALSE) {
           recursive_remove_directory($path);
         } else {
           unlink($path);
-          Error::$errors[] = substr($path,strlen(CMS_ROOT)).'<br/>';
+          //Error::$errors[] = substr($path,strlen(CMS_ROOT)).'<br/>';
         }
       }
     }
