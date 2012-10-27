@@ -12,7 +12,7 @@ register_shutdown_function( array( 'Error', 'captureShutdown' ) );
 
 class Error
 {
-    private static $errors = array();
+    public static $errors = array();
     
     public static function captureNormal( $number, $message, $file, $line )
     { self::$errors[] = '<tr><td>MESSAGE:</td><td>' . $message .'</td></tr>'; }
@@ -29,11 +29,11 @@ class Error
         $error = error_get_last( );
         if( $error || count(self::$errors)>0 ) {            
           self::$errors[] = '<tr><td>MESSAGE:</td><td>' . $error['message'] .'</td></tr>';          
-          $message = __('Errors while activating plugin:') .'<table>'. implode(PHP_EOL, self::$errors) . '</table>';
+          $message = __('Errors while uninstalling plugin:') .'<table>'. implode(PHP_EOL, self::$errors) . '</table>';
           Flash::set('error',$message); 
           echo $message;          
         } else { 
-          Flash::set('success',__('Successfully activated mmThumbs plugin')); 
+          Flash::set('success',__('Uninstalled mmThumbs plugin')); 
         }
         
     }
@@ -54,6 +54,7 @@ function recursive_remove_directory($directory, $empty = FALSE) {
           recursive_remove_directory($path);
         } else {
           unlink($path);
+          Error::$errors[] = substr($path,strlen(CMS_ROOT)).'<br/>';
         }
       }
     }
@@ -68,6 +69,10 @@ function recursive_remove_directory($directory, $empty = FALSE) {
 }
 
 $rmDir = CMS_ROOT . '/thmm';
+
+recursive_remove_directory($rmDir);
+
+$rmDir = CMS_ROOT . '/thm';
 
 recursive_remove_directory($rmDir);
 
