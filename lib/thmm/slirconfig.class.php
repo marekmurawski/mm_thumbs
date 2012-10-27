@@ -1,44 +1,26 @@
 <?php
-/**
- * Configuration file for SLIR (Smart Lencioni Image Resizer)
- * 
- * This file is part of SLIR (Smart Lencioni Image Resizer).
- * 
- * SLIR is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * SLIR is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * @copyright Copyright � 2010, Joe Lencioni
- * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
- * @since 2.0
- * @package SLIR
- */
- 
-/* $Id: slirconfig-sample.class.php 123 2010-12-21 18:58:03Z joe.lencioni $ */
 
 require_once 'slirconfigdefaults.class.php';
 
-/**
- * SLIR Config Class
- * 
- * @since 2.0
- * @author Joe Lencioni <joe@shiftingpixel.com>
- * $Date: 2010-12-21 12:58:03 -0600 (Tue, 21 Dec 2010) $
- * @version $Revision: 123 $
- * @package SLIR
- */
 class SLIRConfig extends SLIRConfigDefaults
 {
-	// override configuration values here
+	/**
+	 * Whether SLIR should generate and output images from error messages
+	 * 
+	 * @since 2.0
+	 * @var boolean
+	 */
+	public static $errorImages	= TRUE;
+
+	/**
+	 * Absolute path to the web root (location of files when visiting
+	 * http://domainname.com/) (no trailing slash)
+	 * 
+	 * @since 2.0
+	 * @var string
+	 */
+	public static $documentRoot	= NULL;
+
 	/**
 	 * Path to SLIR (no trailing slash)
 	 * 
@@ -54,18 +36,15 @@ class SLIRConfig extends SLIRConfigDefaults
 	 * @var string
 	 */
 	public static $cacheDirName	= '/thmm/cache';
+
 	/**
-	 * Default crop mode setting to use if crop mode is not specified in the request.
+	 * Absolute path to cache directory. This directory must be world-readable,
+	 * writable by the web server, and must end with SLIR_CACHE_DIR_NAME (no
+	 * trailing slash). Ideally, this should be located outside of the web tree.
 	 * 
-	 * Possible values are:
-	 * SLIR::CROP_CLASS_CENTERED
-	 * SLIR::CROP_CLASS_TOP_CENTERED
-	 * SLIR::CROP_CLASS_SMART
-	 * SLIR::CROP_CLASS_FACE (not finished)
-	 * 
-	 * @since 2.0
 	 * @var string
 	 */
+	public static $cacheDir	= NULL;
 	public static $defaultCropper	= SLIR::CROP_CLASS_CENTERED;
     
 	public static function init()

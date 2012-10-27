@@ -23,19 +23,19 @@ if (!defined('IN_CMS')) { exit(); }
     echo '<li>Use MOD_REWRITE - <span style="color: red">MOD_REWRITE is turned OFF</span></li>';
   }
  if (file_exists(CMS_ROOT.'/.htaccess')) {
-    echo '<li>/.htaccess exists - <span style="color: green">CMS_ROOT/.htaccess file found! URL rewriting seems to work</span></li>';
+    echo '<li>/.htaccess exists - <span style="color: green">'.CMS_ROOT.'/.htaccess file found! URL rewriting seems to work</span></li>';
   } else {
-    echo '<li>/.htaccess exists - <span style="color: red">CMS_ROOT/.htaccess file not found! Setup your URL rewriting!</span></li>';
+    echo '<li>/.htaccess exists - <span style="color: red">'.CMS_ROOT.'/.htaccess file not found! Setup your URL rewriting!</span></li>';
   }
  if (file_exists(CMS_ROOT.'/thmm/.htaccess')) {
-    echo '<li>/thmm/.htaccess exists - <span style="color: green">CMS_ROOT/thmm/.htaccess file found!</span></li>';
+    echo '<li>/thmm/.htaccess exists - <span style="color: green">'.CMS_ROOT.'/thmm/.htaccess file found!</span></li>';
   } else {
-    echo '<li>/thmm/.htaccess exists - <span style="color: red">CMS_ROOT/thmm/.htaccess file not found! Try re-enabling the plugin</span></li>';
+    echo '<li>/thmm/.htaccess exists - <span style="color: red">'.CMS_ROOT.'/thmm/.htaccess file not found! Try re-enabling the plugin</span></li>';
   }
  if (file_exists(CMS_ROOT.'/thmm/index.php')) {
-    echo '<li>/thmm/index.php exists - <span style="color: green">CMS_ROOT/thmm/index.php file found!</span></li>';
+    echo '<li>/thmm/index.php exists - <span style="color: green">'.CMS_ROOT.'/thmm/index.php file found!</span></li>';
   } else {
-    echo '<li>/thmm/index.php exists - <span style="color: red">CMS_ROOT/thmm/index.php file not found! Try re-enabling the plugin</span></li>';
+    echo '<li>/thmm/index.php exists - <span style="color: red">'.CMS_ROOT.'/thmm/index.php file not found! Try re-enabling the plugin</span></li>';
   }
   
   
@@ -88,7 +88,7 @@ if (!defined('IN_CMS')) { exit(); }
   <?php echo URI_PUBLIC; ?>
 </p>
 <p style="font-weight: bold;">
-  &lt;img src="<?php echo URI_PUBLIC; ?>thmm/<input id="params" value="w80"><?php echo URI_PUBLIC . 'wolf/plugins/mm_thumbs/images/sample.jpg' ?>" /&gt;
+  &lt;img src="<?php echo URI_PUBLIC; ?>thmm/<input id="params" value="w80"><?php echo '/wolf/plugins/mm_thumbs/images/sample.jpg' ?>" /&gt;
 </p>
 <p>
   <input type="button" id="resetImage" value="Reset Image">
@@ -100,7 +100,7 @@ if (!defined('IN_CMS')) { exit(); }
 <script type="text/javascript">
 // <![CDATA[
     var defaultParams = 'w200-h200-c1:1';
-    var defaultImage = '<?php echo URI_PUBLIC; ?>' + 'thmm/'+ defaultParams + '<?php echo URI_PUBLIC . 'wolf/plugins/mm_thumbs/images/sample.jpg' ?>';
+    var defaultImage = '<?php echo URI_PUBLIC; ?>' + 'thmm/'+ defaultParams + '<?php echo '/wolf/plugins/mm_thumbs/images/sample.jpg' ?>';
     
     String.prototype.trimLastMinus=function(){return this.replace(/-$/,'');};
     

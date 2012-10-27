@@ -134,7 +134,8 @@ class SLIRConfigDefaults
 	 * @since 2.0
 	 * @var string
 	 */
-	public static $SLIRDir	= '/thm' ;
+	//public static $SLIRDir	= '/thm' ;
+	public static $SLIRDir	= NULL ;
 
 	/**
 	 * Name of directory to store cached files in (no trailing slash)
@@ -142,7 +143,8 @@ class SLIRConfigDefaults
 	 * @since 2.0
 	 * @var string
 	 */
-	public static $cacheDirName	= '/thm/cache';
+	//public static $cacheDirName	= '/thm/cache';
+	public static $cacheDirName	= NULL;
 
 	/**
 	 * Absolute path to cache directory. This directory must be world-readable,
