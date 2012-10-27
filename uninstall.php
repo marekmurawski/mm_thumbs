@@ -72,8 +72,4 @@ $rmDir = CMS_ROOT . '/thmm';
 
 recursive_remove_directory($rmDir);
 
-$rmDir = CMS_ROOT . '/thm';
-
-recursive_remove_directory($rmDir);
-
 exit();
