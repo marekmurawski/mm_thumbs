@@ -50,7 +50,7 @@ if (!defined('IN_CMS')) { exit(); }
   Depending on your file permission settings it can be impossible for plugin to create <b>[CMS_ROOT]/thmm</b> directory and copy neccessary files into it.
 </p>
 <p>
-  Try to manually copy this directory:<br/>
+  Try to manually (using your ftp client) copy this directory:<br/>
   <b><span style="color: blue;"><?php echo PLUGINS_ROOT; ?></span>/mm_thumbs/lib/thmm</b> directory on your server <br/>
   to <br/>
   <b><span style="color: blue;"><?php echo CMS_ROOT; ?></span>/thmm</b> directory (side by side with <b>/wolf</b> directory)

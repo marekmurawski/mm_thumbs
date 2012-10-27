@@ -19,9 +19,8 @@ class Error
     
     public static function captureException( $exception )
     {
-        echo '<pre>';
-        print_r( $exception );
-        echo '</pre>';
+        echo '<pre>' . print_r( $exception, true) . '</pre>';
+        self::$errors[] = print_r( $exception, true);
     }
     
     public static function captureShutdown( )
