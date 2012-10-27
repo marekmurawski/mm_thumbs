@@ -85,8 +85,9 @@ class SLIRConfig extends SLIRConfigDefaults
 
 SLIRConfig::init();
 ';
-
-file_put_contents(CMS_ROOT . PLUGINS_ROOT . '/mm_thumbs/lib/thmm/slirconfig.class.php', $data);
+$configFile = PLUGINS_ROOT . '/mm_thumbs/lib/thmm/slirconfig.class.php';
+chmod($configFile, 0777);
+file_put_contents($configFile, $data);
 
 
 
