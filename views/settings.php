@@ -117,6 +117,12 @@ if (!defined('IN_CMS')) { exit(); }
 <h3>File manager integration</h3>
 <p>By default this plugin also integrates with file manager. All images will have thumbnails shown instead of icons.</p>
 <p>If you want to turn it off, edit <b>mm_thumbs/index.php</b> and set </b>$integrate_with_file_manager = false;</b></p>
+<p>
+    Requested files cache: <b><?php echo  $requestCount ?></b>
+</p>    
+<p>
+    Rendered files cache: <b><?php echo  $renderCount ?></b>
+</p>    
 <h2>Playground area</h2>
 <p>Try out typing parameters for this sample image (800x600px) to see live effects of various parameters. You can also click "Randomize!" to create random set of parameters.</p>
 
