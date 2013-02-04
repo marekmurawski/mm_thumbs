@@ -17,13 +17,13 @@
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright Copyright © 2010, Joe Lencioni
+ * @copyright Copyright ï¿½ 2010, Joe Lencioni
  * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public
  * License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
  */
- 
+
 /* $Id: slir.class.php 129 2010-12-22 19:43:06Z joe.lencioni $ */
 
 /**
@@ -35,8 +35,8 @@
  * I love to hear when my work is being used, so if you decide to use this,
  * feel encouraged to send me an email. I would appreciate it if you would
  * include a link on your site back to Shifting Pixel (either the SLIR page or
- * shiftingpixel.com), but don’t worry about including a big link on each page
- * if you don’t want to–one will do just nicely. Feel free to contact me to
+ * shiftingpixel.com), but donï¿½t worry about including a big link on each page
+ * if you donï¿½t want toï¿½one will do just nicely. Feel free to contact me to
  * discuss any specifics (joe@shiftingpixel.com).
  *
  * REQUIREMENTS:
@@ -62,7 +62,7 @@
  * plus sign, +, should be encoded as %2B) in order for SLIR to recognize them
  * properly. This can be accomplished by passing your filenames through PHP's
  * rawurlencode() or urlencode() function.
- * 
+ *
  * EXAMPLES:
  *
  * Resizing a JPEG to a max width of 100 pixels and a max height of 100 pixels:
@@ -91,7 +91,7 @@
  * @package SLIR
  *
  * @uses PEL
- * 
+ *
  * @todo lock files when writing?
  * @todo Prevent SLIR from calling itself
  * @todo Percentage resizing?
@@ -115,19 +115,19 @@ class SLIR
 	 * @var string
 	 */
 	const VERSION	= '2.0b4';
-	
-	/**
-	 * @since 2.0
-	 * @var string
-	 */
-	const CROP_CLASS_CENTERED	= 'centered';
 
 	/**
 	 * @since 2.0
 	 * @var string
 	 */
-	const CROP_CLASS_TOP_CENTERED	= 'topcentered';
-	
+	const CROP_CLASS_CENTERED	= 'c';
+
+	/**
+	 * @since 2.0
+	 * @var string
+	 */
+	const CROP_CLASS_TOP_CENTERED	= 'tc';
+
 	/**
 	 * @since 2.0
 	 * @var string
@@ -185,28 +185,28 @@ class SLIR
 		// This helps prevent unnecessary warnings (which messes up images)
 		// on servers that are set to display E_STRICT errors.
 		$this->disableStrictErrorReporting();
-		
+
 		// Prevents ob_start('ob_gzhandler') in auto_prepend files from messing
 		// up SLIR's output.
 		$this->escapeOutputBuffering();
-		
+
 		$this->getConfig();
-		
+
 		$this->initializeGarbageCollection();
 
 		$this->request	= new SLIRRequest();
-		
+
 		// Check the cache based on the request URI
 		if (SLIRConfig::$useRequestCache === TRUE && $this->isRequestCached())
 		{
 			$this->serveRequestCachedImage();
 		}
-			
+
 		// Set up our error handler after the request cache to help keep
 		// everything humming along nicely
 		require 'slirexception.class.php';
 		set_error_handler(array('SLIRException', 'error'));
-		
+
 		// Set all parameters for resizing
 		$this->setParameters();
 
@@ -215,7 +215,7 @@ class SLIR
 		{
 			$this->serveSourceImage();
 		}
-			
+
 		// Determine rendered dimensions
 		$this->setRenderedProperties();
 
@@ -228,10 +228,10 @@ class SLIR
 			$this->serveRenderedImage();
 		} // if
 	}
-	
+
 	/**
 	 * Disables E_STRICT error reporting
-	 * 
+	 *
 	 * @since 2.0
 	 * @return integer
 	 */
@@ -242,7 +242,7 @@ class SLIR
 
 	/**
 	 * Escapes from output buffering.
-	 * 
+	 *
 	 * @since 2.0
 	 * @return void
 	 */
@@ -251,7 +251,7 @@ class SLIR
 		while ($level = ob_get_level())
 		{
 			ob_end_clean();
-			
+
 			if ($level == ob_get_level()) // On some setups, ob_get_level() will return a 1 instead of a 0 when there are no more buffers
 			{
 				return;
@@ -261,7 +261,7 @@ class SLIR
 
 	/**
 	 * Determines if the garbage collector should run for this request.
-	 * 
+	 *
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -279,7 +279,7 @@ class SLIR
 
 	/**
 	 * Checks to see if the garbage collector should be initialized, and if it should, initializes it.
-	 * 
+	 *
 	 * @since 2.0
 	 * @return void
 	 */
@@ -295,9 +295,9 @@ class SLIR
 
 	/**
 	 * Deletes stale files from a directory.
-	 * 
+	 *
 	 * Used by the garbage collector to keep the cache directories from overflowing.
-	 * 
+	 *
 	 * @param string $path Directory to delete stale files from
 	 */
 	private function deleteStaleFilesFromDirectory($path, $useAccessedTime = TRUE)
@@ -325,9 +325,9 @@ class SLIR
 
 	/**
 	 * Garbage collector
-	 * 
+	 *
 	 * Clears out old files from the cache
-	 * 
+	 *
 	 * @since 2.0
 	 * @return void
 	 */
@@ -339,7 +339,7 @@ class SLIR
 
 	/**
 	 * Includes the configuration file.
-	 * 
+	 *
 	 * If the configuration file cannot be included, this will throw an error that will hopefully explain what needs to be done.
 	 *
 	 * @since 2.0
@@ -370,7 +370,7 @@ class SLIR
 				. '"slirconfig-sample.class.php"');
 		} // if
 	}
-	
+
 	/**
 	 * Returns the configuration filename. Allows the developer to specify an alternate configuration file.
 	 *
@@ -388,7 +388,7 @@ class SLIR
 			return 'slirconfig.class.php';
 		}
 	}
-	
+
 	/**
 	 * Sets up parameters for image resizing
 	 *
@@ -399,7 +399,7 @@ class SLIR
 	{
 		$this->source		= new SLIRImage();
 		$this->source->path	= $this->request->path;
-		
+
 		// If either a max width or max height are not specified or larger than
 		// the source image we default to the dimension of the source image so
 		// they do not become constraints on our resized image.
@@ -416,9 +416,9 @@ class SLIR
 
 	/**
 	 * Allocates memory for the request.
-	 * 
+	 *
 	 * Tries to dynamically guess how much memory will be needed for the request based on the dimensions of the source image.
-	 * 
+	 *
 	 * @since 2.0
 	 * @return void
 	 */
@@ -451,15 +451,15 @@ class SLIR
 		$this->copySourceToRendered();
 		$this->rendered->setPath($this->source->path, FALSE);
 		$this->source->destroyImage();
-		
+
 		$this->rendered->crop($this->isBackgroundFillOn());
 		$this->rendered->sharpen($this->calculateSharpnessFactor());
 		$this->rendered->interlace();
 	}
-	
+
 	/**
 	 * Copies the source image to the rendered image, resizing (resampling) it if resizing is requested
-	 * 
+	 *
 	 * @since 2.0
 	 * @return void
 	 */
@@ -495,10 +495,10 @@ class SLIR
 			);
 		} // if
 	}
-	
+
 	/**
 	 * Calculates how much to sharpen the image based on the difference in dimensions of the source image and the rendered image
-	 * 
+	 *
 	 * @since 2.0
 	 * @return integer Sharpness factor
 	 */
@@ -506,7 +506,7 @@ class SLIR
 	{
 		return $this->calculateASharpnessFactor($this->source->area(), $this->rendered->area());
 	}
-	
+
 	/**
 	 * Calculates sharpness factor to be used to sharpen an image based on the
 	 * area of the source image and the area of the destination image
@@ -533,7 +533,7 @@ class SLIR
 
 	/**
 	 * Copies IPTC data from the source image to the cached file
-	 * 
+	 *
 	 * @since 2.0
 	 * @param string $cacheFilePath
 	 * @return boolean
@@ -614,7 +614,7 @@ class SLIR
 
 	/**
 	 * Determines if the requested width is different than the width of the source image
-	 * 
+	 *
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -632,7 +632,7 @@ class SLIR
 
 	/**
 	 * Determines if the requested height is different than the height of the source image
-	 * 
+	 *
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -650,7 +650,7 @@ class SLIR
 
 	/**
 	 * Determines if a background fill has been requested and if the image is able to have transparency (not for JPEG files)
-	 * 
+	 *
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -668,7 +668,7 @@ class SLIR
 
 	/**
 	 * Determines if the user included image quality in the request
-	 * 
+	 *
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -679,7 +679,7 @@ class SLIR
 
 	/**
 	 * Determines if the image should be cropped based on the requested crop ratio and the width:height ratio of the source image
-	 * 
+	 *
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -704,20 +704,20 @@ class SLIR
 	private function setRenderedProperties()
 	{
 		$this->rendered	= new SLIRImage();
-		
+
 		// Set default properties of the rendered image
 		$this->rendered->width	= $this->source->width;
 		$this->rendered->height	= $this->source->height;
-		
+
 		// Cropping
 		/*
 		To determine the width and height of the rendered image, the following
 		should occur.
-		
+
 		If cropping an image is required, we need to:
 		 1. Compute the dimensions of the source image after cropping before
 			resizing.
-		 2. Compute the dimensions of the resized image before cropping. One of 
+		 2. Compute the dimensions of the resized image before cropping. One of
 			these dimensions may be greater than maxWidth or maxHeight because
 			they are based on the dimensions of the final rendered image, which
 			will be cropped to fit within the specified maximum dimensions.
@@ -726,7 +726,7 @@ class SLIR
 		 4. Then when rendering, the image needs to be resized, crop offsets
 			need to be computed based on the desired method (smart or centered),
 			and the image needs to be cropped to the specified dimensions.
-		
+
 		If cropping an image is not required, we need to compute the dimensions
 		of the image without cropping. These must both be less than or equal to
 		maxWidth and maxHeight.
@@ -735,7 +735,7 @@ class SLIR
 		{
 			// Determine the dimensions of the source image after cropping and
 			// before resizing
-			
+
 			if ($this->request->cropRatio['ratio'] > $this->source->ratio())
 			{
 				// Image is too tall so we will crop the top and bottom
@@ -757,7 +757,7 @@ class SLIR
 		{
 			$this->rendered->height	= round($this->resizeWidthFactor() * $this->source->height);
 			$this->rendered->width	= round($this->resizeWidthFactor() * $this->source->width);
-			
+
 			// Determine dimensions after cropping
 			if ($this->isCroppingNeeded())
 			{
@@ -769,7 +769,7 @@ class SLIR
 		{
 			$this->rendered->width	= round($this->resizeHeightFactor() * $this->source->width);
 			$this->rendered->height	= round($this->resizeHeightFactor() * $this->source->height);
-			
+
 			// Determine dimensions after cropping
 			if ($this->isCroppingNeeded())
 			{
@@ -781,14 +781,14 @@ class SLIR
 		{
 			$ratio	= ($this->resizeUncroppedWidthFactor() > $this->resizeUncroppedHeightFactor())
 				? $this->resizeUncroppedWidthFactor() : $this->resizeUncroppedHeightFactor();
-				
+
 			$this->rendered->width		= round($ratio * $this->source->width);
 			$this->rendered->height		= round($ratio * $this->source->height);
-			
+
 			$this->rendered->cropWidth	= round($ratio * $this->source->cropWidth);
 			$this->rendered->cropHeight	= round($ratio * $this->source->cropHeight);
 		} // if
-		
+
 		// Determine the quality of the output image
 		$this->rendered->quality		= ($this->request->quality !== NULL)
 			? $this->request->quality : SLIRConfig::$defaultQuality;
@@ -824,16 +824,16 @@ class SLIR
 		{
 			throw new SLIRException("Unable to determine type of source image");
 		} // if
-		
+
 		if ($this->isBackgroundFillOn())
 		{
 			$this->rendered->background	= $this->request->background;
 		}
 	}
-	
+
 	/**
 	 * Detemrines if the image should be resized based on its width (i.e. the width is the constraining dimension for this request)
-	 * 
+	 *
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -848,7 +848,7 @@ class SLIR
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * Detemrines if the image should be resized based on its height (i.e. the height is the constraining dimension for this request)
 	 * @since 2.0
@@ -865,7 +865,7 @@ class SLIR
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * @since 2.0
 	 * @return float
@@ -881,7 +881,7 @@ class SLIR
 			return $this->resizeUncroppedWidthFactor();
 		}
 	}
-	
+
 	/**
 	 * @since 2.0
 	 * @return float
@@ -890,7 +890,7 @@ class SLIR
 	{
 		return $this->request->width / $this->source->width;
 	}
-	
+
 	/**
 	 * @since 2.0
 	 * @return float
@@ -899,7 +899,7 @@ class SLIR
 	{
 		return $this->request->width / $this->source->cropWidth;
 	}
-	
+
 	/**
 	 * @since 2.0
 	 * @return float
@@ -915,7 +915,7 @@ class SLIR
 			return $this->resizeUncroppedHeightFactor();
 		}
 	}
-	
+
 	/**
 	 * @since 2.0
 	 * @return float
@@ -924,7 +924,7 @@ class SLIR
 	{
 		return $this->request->height / $this->source->height;
 	}
-	
+
 	/**
 	 * @since 2.0
 	 * @return float
@@ -933,10 +933,10 @@ class SLIR
 	{
 		return $this->request->height / $this->source->cropHeight;
 	}
-	
+
 	/**
 	 * Determines if the rendered file is in the rendered cache
-	 * 
+	 *
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -947,7 +947,7 @@ class SLIR
 
 	/**
 	 * Determines if the request is symlinked to the rendered file
-	 * 
+	 *
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -958,7 +958,7 @@ class SLIR
 
 	/**
 	 * Determines if a given file exists in the cache
-	 * 
+	 *
 	 * @since 2.0
 	 * @param string $cacheFilePath
 	 * @return boolean
@@ -1006,7 +1006,7 @@ class SLIR
 	{
 		return $this->getRenderedCacheDir() . $this->renderedCacheFilename();
 	}
-	
+
 	/**
 	 * @since 2.0
 	 * @return string
@@ -1024,7 +1024,7 @@ class SLIR
 	{
 		return '/' . md5($_SERVER['HTTP_HOST'] . '/' . $this->requestURI() . '/' . SLIRConfig::$defaultCropper);
 	}
-	
+
 	/**
 	 * @since 2.0
 	 * @return string
@@ -1069,7 +1069,7 @@ class SLIR
 	private function cache()
 	{
 		$this->cacheRendered();
-		
+
 		if (SLIRConfig::$useRequestCache === TRUE)
 		{
 			return $this->cacheRequest($this->rendered->data, TRUE);
@@ -1093,7 +1093,7 @@ class SLIR
 			$this->rendered->data,
 			TRUE
 		);
-		
+
 		return TRUE;
 	}
 
@@ -1128,7 +1128,7 @@ class SLIR
 	private function cacheFile($cacheFilePath, $imageData, $copyEXIF = TRUE, $symlinkToPath = NULL)
 	{
 		$this->initializeCache();
-		
+
 		// Try to create just a symlink to minimize disk space
 		if ($symlinkToPath && function_exists('symlink') && (file_exists($cacheFilePath) || symlink($symlinkToPath, $cacheFilePath)))
 		{
@@ -1168,10 +1168,10 @@ class SLIR
 	{
 		// Make sure to suppress strict warning thrown by PEL
 		@require_once dirname(__FILE__) . '/pel-0.9.2/src/PelJpeg.php';
-		
+
 		$jpeg		= new PelJpeg($this->source->fullPath());
 		$exif		= $jpeg->getExif();
-		
+
 		if ($exif)
 		{
 			$jpeg		= new PelJpeg($cacheFilePath);
@@ -1181,10 +1181,10 @@ class SLIR
 			{
 				return FALSE;
 			}
-			
+
 			return $imageData;
 		} // if
-		
+
 		return file_get_contents($cacheFilePath);
 	}
 
@@ -1260,7 +1260,7 @@ class SLIR
 			$this->source->mime,
 			'source'
 		);
-		
+
 		exit();
 	}
 
@@ -1306,20 +1306,20 @@ class SLIR
 			NULL,
 			"$cacheType cache"
 		);
-		
+
 		// If we are serving from the rendered cache, create a symlink in the
 		// request cache to the rendered file
 		if ($cacheType != 'request')
 		{
 			$this->cacheRequest($data, FALSE);
 		}
-		
+
 		exit();
 	}
-	
+
 	/**
 	 * Determines the mime type of an image
-	 * 
+	 *
 	 * @since 2.0
 	 * @param string $path
 	 * @return string
@@ -1340,7 +1340,7 @@ class SLIR
 	{
 		// Cache the image
 		$this->cache();
-		
+
 		// Serve the file
 		$this->serveFile(
 			NULL,
@@ -1356,7 +1356,7 @@ class SLIR
 
 		exit();
 	}
-	
+
 	/**
 	 * Serves a file
 	 *
@@ -1389,7 +1389,7 @@ class SLIR
 		{
 			$length		= strlen($data);
 		} // if
-		
+
 		// Serve the headers
 		$this->serveHeaders(
 			$this->lastModified($lastModified),
@@ -1397,7 +1397,7 @@ class SLIR
 			$length,
 			$SLIRHeader
 		);
-		
+
 		// Read the image data into memory if we need to
 		if ($data == NULL)
 		{
@@ -1415,7 +1415,7 @@ class SLIR
 			flush();
 		} // while
 		fclose($fp);
-		
+
 		return $data;
 	}
 
@@ -1505,4 +1505,4 @@ class SLIR
 // a frog jumps
 // the sound of water
 
-// —Matsuo Basho
+// ï¿½Matsuo Basho
