@@ -53,14 +53,76 @@ class mmThumbs {
         echo '<ul>';
         foreach ( $files as $file ) {
             echo '<li><a class="mm_popup" href="' . URL_PUBLIC . $path . DS . $file . '" rel="' . URL_PUBLIC . $path . DS . $file . '"target="_blank">';
-            echo '<img src="' . URL_PUBLIC . 'thmm' . DS . $thmm . DS . URL_PUBLIC . $path . DS . $file . '"/>';
+            echo '<img src="' . URL_PUBLIC . 'thmm' . DS . $thmm . DS . $path . DS . $file . '"/>';
             $finfo = self::getImageFileInfo( $core_path . DS . $file );
-            echo '<pre>' . print_r($finfo['width'] , true ) . '</pre>';
+            //echo '<pre>' . print_r( $finfo, true ) . '</pre>';
             echo '</li>';
         }
         echo '</ul>';
 
     }
+
+
+    /**
+     *
+     * @param type $file
+     * @param type $chunkSize
+     * @return type
+     * @throws RuntimeException
+     */
+    public static function xmp_read_data( $file, $chunkSize ) {
+        if ( !is_int( $chunkSize ) ) {
+            throw new RuntimeException( 'Expected integer value for argument #2 (chunk_size)' );
+        }
+
+        if ( ($file_pointer = fopen( $file, 'r' )) === FALSE ) {
+            throw new RuntimeException( 'Could not open file for reading' );
+        }
+
+        $startTag = '<x:xmpmeta';
+        $endTag   = '</x:xmpmeta>';
+        $buffer   = NULL;
+        $hasXmp   = FALSE;
+
+        while ( ($chunk = fread( $file_pointer, $chunkSize )) !== FALSE ) {
+
+            if ( $chunk === "" ) {
+                break;
+            }
+
+            $buffer .= $chunk;
+            $startPosition = strpos( $buffer, $startTag );
+            $endPosition   = strpos( $buffer, $endTag );
+
+            if ( $startPosition !== FALSE && $endPosition !== FALSE ) {
+                $buffer = substr( $buffer, $startPosition, $endPosition - $startPosition + 12 );
+                $hasXmp = TRUE;
+                break;
+            } elseif ( $startPosition !== FALSE ) {
+                $buffer = substr( $buffer, $startPosition );
+                $hasXmp = TRUE;
+            } elseif ( strlen( $buffer ) > (strlen( $startTag ) * 2) ) {
+                $buffer = substr( $buffer, strlen( $startTag ) );
+            }
+        }
+
+        fclose( $file_pointer );
+        return ($hasXmp) ? $buffer : NULL;
+
+    }
+
+    /**
+     * get Hash
+     *
+     * @param string $filename
+     * @return string SHA1 of file or false on file not found
+     */
+    public static function getHash($filename) {
+        if ( !file_exists( $filename ) )
+            return false;
+        return sha1_file( $filename );
+    }
+
 
     /**
      * getImageFileInfo
@@ -76,8 +138,8 @@ class mmThumbs {
      * @param string $file
      * @return Array
      */
-    public static function getImageFileInfo( $file ) {
-        $data     = array(
+    public static function getImageFileInfo( $file, $try_xmp = true, $try_exif = true ) {
+        $data = array(
                     'title'       => NULL,
                     'description' => NULL,
                     'copyright'   => NULL,
@@ -85,21 +147,44 @@ class mmThumbs {
                     'height'      => NULL,
                     'width'       => NULL,
         );
-        //if ( $exif_data = exif_read_data( $file, NULL, true ) ) {
-        if ( $sizeinfo = getimagesize( $file, $exif ) ) {
-            //echo '<pre>' . print_r( $sizeinfo, true ) . '</pre>';
-            if ( isset( $exif['APP13'] ) ) {
-                $iptc                = iptcparse( $exif['APP13'] );
-                //echo '<pre>' . print_r( $iptc, true ) . '</pre>';
-                $data['title']       = (isset( $iptc['2#105'][0] )) ? $iptc['2#105'][0] : null;
-                $data['description'] = (isset( $iptc['2#120'][0] )) ? $iptc['2#120'][0] : null;
-                $data['copyright']   = (isset( $iptc['2#080'][0] )) ? $iptc['2#080'][0] : null;
-                $data['copyright']   .= (isset( $iptc['2#116'][0] )) ? ' - ' . $iptc['2#116'][0] : null;
-                $data['tags']   = (isset( $iptc['2#025'] )) ? $iptc['2#025'] : null;
+        ;
+
+
+//        if ( $try_xmp && ($xmp_data = self::xmp_read_data( $file, 8192 )) ) {
+//            $xmp_data = str_replace( ':', '', $xmp_data );
+//
+//            //echo '<pre>' . print_r( html_encode($xmp_data), true ) . '</pre>';
+//            $xmp = simplexml_load_string( $xmp_data );
+//
+//            print gettype( $xmp->xpath( '/' ) );
+//            $title = $xmp->xpath( '/' );
+//            echo '<pre>' . print_r( $title, true ) . '</pre>';
+//
+//
+//
+//
+//            echo '<pre>' . print_r( $xmp, true ) . '</pre>';
+//        }
+
+
+        if ( $try_exif && ($exif_data = exif_read_data( $file, NULL, true, false )) ) {
+            //echo '<pre>' . print_r( $exif_data, true ) . '</pre>';
+            if ( isset( $exif_data['IFD0'] ) ) {
+                $ifd0                = $exif_data['IFD0'];
+                //echo '<pre>' . print_r( $ifd0, true ) . '</pre>';
+                $data['title']       = (isset( $ifd0['Title'] )) ? $ifd0['Title'] : null;
+                $data['description'] = (isset( $ifd0['ImageDescription'] )) ? $ifd0['ImageDescription'] : null;
+
+                $data['copyright'] = (isset( $ifd0['Artist'] )) ? $ifd0['Artist'] : null;
+                $data['copyright'] .= (isset( $ifd0['Copyright'] )) ? ' - ' . $ifd0['Copyright'] : null;
+
+                $data['tags']              = (isset( $ifd0['Keywords'] )) ? $ifd0['Keywords'] : null;
+//                $data['encoding'] =iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $data['copyright']);
             }
-            $data['original_filename'] = pathinfo($file,PATHINFO_FILENAME);
-            $data['height'] = (isset( $sizeinfo[1] )) ? $sizeinfo[1] : null;
-            $data['width']  = (isset( $sizeinfo[0] )) ? $sizeinfo[0] : null;
+            $data['original_filename'] = pathinfo( $file, PATHINFO_FILENAME );
+            $data['width']             = (isset( $exif_data['COMPUTED']['Width'] )) ? $exif_data['COMPUTED']['Width'] : null;
+            $data['height']            = (isset( $exif_data['COMPUTED']['Height'] )) ? $exif_data['COMPUTED']['Height'] : null;
+            //echo '<pre>' . print_r( $data, true ) . '</pre>';
         }
         return $data;
 
