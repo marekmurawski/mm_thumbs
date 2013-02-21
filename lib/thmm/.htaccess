@@ -1,0 +1,10 @@
+
+RewriteEngine On
+RewriteBase /thmm/
+RewriteRule . index.php [L]
+
+# Prevent viewing of the error log file in its default location
+<Files slir-error-log>
+Order Deny,Allow
+Deny from All
+</Files>
