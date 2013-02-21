@@ -111,16 +111,18 @@ class mmThumbs {
 
     }
 
+
     /**
      * get Hash
      *
      * @param string $filename
      * @return string SHA1 of file or false on file not found
      */
-    public static function getHash($filename) {
+    public static function getHash( $filename ) {
         if ( !file_exists( $filename ) )
             return false;
         return sha1_file( $filename );
+
     }
 
 
