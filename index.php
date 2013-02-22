@@ -4,6 +4,11 @@ if ( !defined( 'IN_CMS' ) ) {
     exit();
 }
 
+if ( !defined( 'DEFAULT_THMM' ) ) {
+    define( 'DEFAULT_THMM', 'w100-h100-c1:1' );
+}
+
+
 Plugin::setInfos( array(
             'id'                   => 'mm_thumbs',
             'title'                => 'mmThumbs',
@@ -48,17 +53,34 @@ class mmThumbs {
         $core_path = CMS_ROOT . DS . $path;
         $files     = self::getFiles( $path );
 
-        //echo '<pre>' . print_r($files, true) . '</pre>';
+//echo '<pre>' . print_r($files, true) . '</pre>';
         $thmm = array_key_exists( 'thmm', $args ) ? $args['thmm'] : 'w100';
         echo '<ul>';
         foreach ( $files as $file ) {
             echo '<li><a class="mm_popup" href="' . URL_PUBLIC . $path . DS . $file . '" rel="' . URL_PUBLIC . $path . DS . $file . '"target="_blank">';
             echo '<img src="' . URL_PUBLIC . 'thmm' . DS . $thmm . DS . $path . DS . $file . '"/>';
             $finfo = self::getImageFileInfo( $core_path . DS . $file );
-            //echo '<pre>' . print_r( $finfo, true ) . '</pre>';
+//echo '<pre>' . print_r( $finfo, true ) . '</pre>';
             echo '</li>';
         }
         echo '</ul>';
+
+    }
+
+
+    public static function getPath( $file, $args = NULL ) {
+
+        if ( is_array( $args ) ) {
+            $thmm = (array_key_exists( 'thmm', $args )) ? $args['thmm'] : DEFAULT_THMM;
+        } else {
+            $thmm = trim( $args, '/' );
+        }
+
+        $file = trim( $file, '/' );
+        // Backend?
+        //if (defined(CMS_BACKEND)) {
+        return(URL_PUBLIC . 'thmm' . DS . $thmm . DS . $file);
+        //} else {
 
     }
 
@@ -170,10 +192,10 @@ class mmThumbs {
 
 
         if ( $try_exif && ($exif_data = exif_read_data( $file, NULL, true, false )) ) {
-            //echo '<pre>' . print_r( $exif_data, true ) . '</pre>';
+//echo '<pre>' . print_r( $exif_data, true ) . '</pre>';
             if ( isset( $exif_data['IFD0'] ) ) {
                 $ifd0                = $exif_data['IFD0'];
-                //echo '<pre>' . print_r( $ifd0, true ) . '</pre>';
+//echo '<pre>' . print_r( $ifd0, true ) . '</pre>';
                 $data['title']       = (isset( $ifd0['Title'] )) ? $ifd0['Title'] : null;
                 $data['description'] = (isset( $ifd0['ImageDescription'] )) ? $ifd0['ImageDescription'] : null;
 
@@ -186,7 +208,7 @@ class mmThumbs {
             $data['original_filename'] = pathinfo( $file, PATHINFO_FILENAME );
             $data['width']             = (isset( $exif_data['COMPUTED']['Width'] )) ? $exif_data['COMPUTED']['Width'] : null;
             $data['height']            = (isset( $exif_data['COMPUTED']['Height'] )) ? $exif_data['COMPUTED']['Height'] : null;
-            //echo '<pre>' . print_r( $data, true ) . '</pre>';
+//echo '<pre>' . print_r( $data, true ) . '</pre>';
         }
         return $data;
 
@@ -200,7 +222,7 @@ class mmThumbs {
      */
     private static function getFiles( $path ) {
         $scandir = scandir( $path );
-        //echo '<pre>' . print_r($scandir, true) . '</pre>';
+//echo '<pre>' . print_r($scandir, true) . '</pre>';
         foreach ( $scandir as $k => $v ) {
             if ( !preg_match( '/(png|jp?g|gif)$/i', $v ) ) {
                 unset( $scandir[$k] );
