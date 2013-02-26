@@ -38,8 +38,8 @@ if (!defined('IN_CMS')) { exit(); }
   } else {
     echo '<li>[CMS_ROOT]/thmm/index.php exists:<br/><span style="margin-left:32px; color: red">'.CMS_ROOT.'/thmm/index.php file not found! Try re-enabling the plugin</span></li>';
   }
-  
-  
+
+
 ?>
 </ul>
 </div>
@@ -72,7 +72,7 @@ if (!defined('IN_CMS')) { exit(); }
 <pre>
   RewriteEngine On
 
-  # the following line should be inserted 
+  # the following line should be inserted
   # just after RewriteEngine On statement
 
   RewriteRule ^thmm(.*)$ wolfcms/thmm/index.php$1 [L]
@@ -81,7 +81,7 @@ if (!defined('IN_CMS')) { exit(); }
 </div>
 <h2>Usage</h2>
 <p>
-  This plugin installs SLIR script in ROOT directory of your Wolf CMS installation. 
+  This plugin installs SLIR script in ROOT directory of your Wolf CMS installation.
   After successful installation of this plugin you can access thumbnails of your
   photos with:
 </p>
@@ -101,28 +101,28 @@ if (!defined('IN_CMS')) { exit(); }
    then the parameter value:
        - Maximum width = w           eg. /thmm/w100/.........
        - Maximum height = h          eg. /thmm/h100/.........
-       - Crop ratio = c              eg. /thmm/w100-c1:2/....
+       - Crop ratio = c              eg. /thmm/w100-c1.2/....
        - Quality = q                 eg. /thmm/w200-q85/.....
        - Background fill color = b   eg. /thmm/bF80/.........
        - Progressive = p (for JPG)   eg. /thmm/h100-p/.......
 
    Resizing a JPEG to a max width of 100 pixels and a max height of 100 pixels
-   with proportions 
+   with proportions
    <b style="color: blue">&lt;img src="/thmm/w100-h100/path/to/image.jpg" alt="Alt text" /&gt;</b>
-  
+
    Resizing and cropping a JPEG into a square:
    <b style="color: blue">&lt;img src="/thmm/w100-h100-c1:1/path/to/image.jpg" alt="Alt text" /&gt;</b>
-  
+
 </pre>
 <h3>File manager integration</h3>
 <p>By default this plugin also integrates with file manager. All images will have thumbnails shown instead of icons.</p>
 <p>If you want to turn it off, edit <b>mm_thumbs/index.php</b> and set </b>$integrate_with_file_manager = false;</b></p>
 <p>
     Requested files cache: <b><?php echo  $requestCount ?></b>
-</p>    
+</p>
 <p>
     Rendered files cache: <b><?php echo  $renderCount ?></b>
-</p>    
+</p>
 <h2>Playground area</h2>
 <p>Try out typing parameters for this sample image (800x600px) to see live effects of various parameters. You can also click "Randomize!" to create random set of parameters.</p>
 
@@ -138,57 +138,63 @@ if (!defined('IN_CMS')) { exit(); }
 Sample image URI: <span id="imageuri" style="font-weight: bold; border: 1px solid red"></span>
 </div>
 
-<img id="sample" src="/thmm/w80/wolf/plugins/mm_thumbs/images/sample.jpg">
+<img id="sample" src="<?php echo URI_PUBLIC; ?>/thmm/w80/wolf/plugins/mm_thumbs/images/sample.jpg">
 
 <script type="text/javascript">
 // <![CDATA[
-    var defaultParams = 'w200-h200-c1:1';
+    var defaultParams = 'w200-h200-c1.1';
     var defaultImage = '<?php echo URI_PUBLIC; ?>' + 'thmm/'+ defaultParams + '<?php echo '/wolf/plugins/mm_thumbs/images/sample.jpg' ?>';
-    
+
     String.prototype.trimLastMinus=function(){return this.replace(/-$/,'');};
-    
+
     makeRandomParams = function () {
       var newWidth  = 'w' + parseInt(20+Math.floor((Math.random()*58)+1)*10);
       var newHeight = 'h' + parseInt(20+Math.floor((Math.random()*78)+1)*10);
-      var newCrop   = 'c' + parseInt(Math.floor((Math.random()*5)+1)) + ':' + parseInt(Math.floor((Math.random()*5)+1));
+      var newCrop   = 'c' + parseInt(Math.floor((Math.random()*5)+1)) + '.' + parseInt(Math.floor((Math.random()*5)+1));
       var newQuality= 'q' + parseInt(Math.floor((Math.random()*100)+1));
-      
+
       var useWidth  = (Math.random() > 0.5);
       var useHeight = (Math.random() > 0.5);
       var useCrop    = (Math.random() > 0.4);
       var useQuality= (Math.random() > 0.5);
-      
-      //alert (doCrop);
-      
+
+      do {
+      useWidth   = (Math.random() > 0.5);
+      useHeight  = (Math.random() > 0.5);
+      //alert (useWidth);
+
+      } while ((useWidth!==true) && (useHeight!==true));
+
+
       var paramString = '';
       if (useWidth)   paramString += newWidth + '-';
       if (useHeight)  paramString += newHeight + '-';
       if (useCrop)    paramString += newCrop + '-';
       if (useQuality) paramString += newQuality;
-      
+
       out = paramString.trimLastMinus();
-      
+
       return out;
-    }
-    
+    };
+
     $(document).ready(function() {
-        $('#params').keyup(function() { 
+        $('#params').keyup(function() {
           var newUri = '<?php echo URI_PUBLIC; ?>' + 'thmm/' + $('#params').val() + '<?php echo '/wolf/plugins/mm_thumbs/images/sample.jpg' ?>';
-          $('#sample').attr('src', newUri); 
-          $('#imageuri').html(newUri); 
-          
+          $('#sample').attr('src', newUri);
+          $('#imageuri').html(newUri);
+
         });
 
-        $('#resetImage').click(function() { 
-          $('#sample').attr('src', defaultImage); 
-          $('#params').val(defaultParams); 
+        $('#resetImage').click(function() {
+          $('#sample').attr('src', defaultImage);
+          $('#params').val(defaultParams);
         });
 
-        $('#randomParams').click(function() { 
+        $('#randomParams').click(function() {
           $('#params').val(makeRandomParams());
           $('#params').trigger('keyup');
         });
-        
+
         $('#resetImage').trigger('click');
         $('#params').trigger('keyup');
     });
