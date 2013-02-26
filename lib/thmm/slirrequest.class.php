@@ -1,22 +1,22 @@
 <?php
 /**
  * Class definition file for SLIRRequest
- * 
+ *
  * This file is part of SLIR (Smart Lencioni Image Resizer).
- * 
+ *
  * SLIR is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * SLIR is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright Copyright � 2010, Joe Lencioni
  * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public
  * License version 3 (GPLv3)
@@ -25,10 +25,10 @@
  */
 
 /* $Id: slirrequest.class.php 129 2010-12-22 19:43:06Z joe.lencioni $ */
- 
+
 /**
  * SLIR request class
- * 
+ *
  * @since 2.0
  * @author Joe Lencioni <joe@shiftingpixel.com>
  * @date $Date: 2010-12-22 13:43:06 -0600 (Wed, 22 Dec 2010) $
@@ -39,7 +39,7 @@ class SLIRRequest
 {
 
 	const CROP_RATIO_DELIMITERS	= ':.';
-	
+
 	/**
 	 * Path to image
 	 *
@@ -47,7 +47,7 @@ class SLIRRequest
 	 * @var string
 	 */
 	private $path;
-	
+
 	/**
 	 * Maximum width for resized image, in pixels
 	 *
@@ -78,34 +78,34 @@ class SLIRRequest
 
 	/**
 	 * Name of the cropper to use, e.g. 'centered' or 'smart'
-	 * 
+	 *
 	 * @since 2.0
 	 * @var string
 	 */
 	private $cropper;
-	
+
 	/**
 	 * Quality of rendered image
-	 * 
+	 *
 	 * @since 2.0
 	 * @var integer
 	 */
 	private $quality;
-	
+
 	/**
 	 * Whether or not progressive JPEG output is turned on
 	 * @var boolean
 	 * @since 2.0
 	 */
 	private $progressive;
-	
+
 	/**
 	 * Color to fill background of transparent PNGs and GIFs
 	 * @var string
 	 * @since 2.0
 	 */
 	private $background;
-	
+
 	/**
 	 * @since 2.0
 	 */
@@ -131,7 +131,7 @@ class SLIRRequest
 			$this->__set($name, $value);
 		} // foreach
 	}
-	
+
 	/**
 	 * @since 2.0
 	 * @return void
@@ -146,7 +146,7 @@ class SLIRRequest
 			case 'path':
 				$this->setPath($value);
 			break;
-			
+
 			case 'w':
 			case 'width':
 				$this->setWidth($value);
@@ -156,22 +156,22 @@ class SLIRRequest
 			case 'height':
 				$this->setHeight($value);
 			break;
-			
+
 			case 'q':
 			case 'quality':
 				$this->setQuality($value);
 			break;
-			
+
 			case 'p':
 			case 'progressive':
 				$this->setProgressive($value);
 			break;
-			
+
 			case 'b';
 			case 'backgroundFillColor':
 				$this->setBackgroundFillColor($value);
 			break;
-			
+
 			case 'c':
 			case 'cropRatio':
 				$this->setCrop($value);
@@ -185,7 +185,7 @@ class SLIRRequest
 	 */
 	final public function __get($name)
 	{
-		return $this->$name;
+                return $this->$name;
 	}
 
 	/**
@@ -270,7 +270,7 @@ class SLIRRequest
 				header('HTTP/1.1 400 Bad Request');
 				throw new SLIRException('Crop ratio must not contain a zero: ' . (string) $value);
 			}
-			
+
 			$this->cropRatio	= array(
 				'width'		=> (float) $ratio[0],
 				'height'	=> (float) $ratio[1],
@@ -290,7 +290,7 @@ class SLIRRequest
 				. ' format: ' . (string) $value);
 		} // if
 	}
-	
+
 	/**
 	 * Determines the parameters to use for resizing
 	 *
@@ -364,7 +364,7 @@ Example usage:
 
 		return $params;
 	}
-	
+
 	/**
 	 * Determines if the request is using the mod_rewrite version or the query
 	 * string version
@@ -390,7 +390,7 @@ Example usage:
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * @since 2.0
 	 * @param string $path
@@ -398,7 +398,7 @@ Example usage:
 	private function setPath($path)
 	{
 		$this->path	= $this->localizePath((string) urldecode($path));
-		
+
 		// Make sure the image path is secure
 		if (!$this->isPathSecure())
 		{
@@ -410,7 +410,7 @@ Example usage:
 		else if (!$this->pathExists())
 		{
 			header('HTTP/1.1 404 Not Found');
-			throw new SLIRException('Image not found: ' . $this->$path);
+			throw new SLIRException('Image not found: ' . $this->path);
 		}
 	}
 	
@@ -423,7 +423,7 @@ Example usage:
 	{
 		return '/' . trim($this->stripQueryString($this->stripProtocolAndDomain($path)), '/');
 	}
-	
+
 	/**
 	 * Strips the protocol and domain from the path if it is there
 	 * @since 2.0
@@ -433,7 +433,7 @@ Example usage:
 	{
 		return preg_replace('/^(?:s?f|ht)tps?:\/\/[^\/]+/i', '', $path);
 	}
-	
+
 	/**
 	 * Strips the query string from the path if it is there
 	 * @since 2.0
@@ -443,7 +443,7 @@ Example usage:
 	{
 		return preg_replace('/\?.*/', '', $path);
 	}
-	
+
 	/**
 	 * Checks to see if the path is secure
 	 *
@@ -464,7 +464,7 @@ Example usage:
 			return TRUE;
 		}
 	}
-	
+
 	/**
 	 * Determines if the path exists
 	 *
@@ -475,7 +475,7 @@ Example usage:
 	{
 		return is_file($this->fullPath());
 	}
-	
+
 	/**
 	 * @return string
 	 * @since 2.0
@@ -484,7 +484,7 @@ Example usage:
 	{
 		return SLIRConfig::$documentRoot . $this->path;
 	}
-	
+
 	/**
 	 * @since 2.0
 	 * @return boolean
@@ -500,7 +500,7 @@ Example usage:
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * @since 2.0
 	 * @return boolean
@@ -516,7 +516,7 @@ Example usage:
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * @since 2.0
 	 * @return boolean
@@ -532,5 +532,5 @@ Example usage:
 			return FALSE;
 		}
 	}
-	
+
 }
