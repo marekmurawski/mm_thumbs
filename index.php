@@ -98,7 +98,7 @@ class mmThumbs {
      * @return type
      * @throws RuntimeException
      */
-    public static function xmp_read_block( $file, $chunkSize ) {
+    public static function xmp_read_block( $file, $chunkSize = 8192, $distanceLimit = 262144 ) {
         if ( !is_int( $chunkSize ) ) {
             throw new RuntimeException( 'Expected integer value for argument #2 (chunk_size)' );
         }
@@ -111,12 +111,16 @@ class mmThumbs {
         $endTag   = '</x:xmpmeta>';
         $buffer   = NULL;
         $hasXmp   = FALSE;
+        $distance = 0;
 
         while ( ($chunk = fread( $file_pointer, $chunkSize )) !== FALSE ) {
 
             if ( $chunk === "" ) {
                 break;
             }
+            $distance += $chunkSize;
+            if ( $distance > $distanceLimit )
+                break;
 
             $buffer .= $chunk;
             $startPosition = strpos( $buffer, $startTag );
@@ -251,6 +255,7 @@ class mmThumbs {
                 $data['copyright'] .= (isset( $ifd0['Copyright'] )) ? ' - ' . $ifd0['Copyright'] : null;
 
                 $data['tags']              = (isset( $ifd0['Keywords'] )) ? $ifd0['Keywords'] : null;
+                $data['xmp']               = html_encode( self::xmp_read_block( $file ) );
             }
             $data['original_filename'] = pathinfo( $file, PATHINFO_FILENAME );
             $data['width']             = (isset( $exif_data['COMPUTED']['Width'] )) ? $exif_data['COMPUTED']['Width'] : null;
@@ -260,6 +265,64 @@ class mmThumbs {
 
     }
 
+
+    /**
+     * Creator
+     *  XMP - dc:creator
+     *  XMP - tiff.artist
+     *  Exif IFD0 -  Artist
+     *
+     *  Tags
+     *  XMP - dc:subject
+     *  IPTC IIM - Keywords
+     *  Exif IFD0 Microsoft.XP.Keywords
+     *  XMP - MicrosoftPhoto:LastKeywordXMP
+     *
+     *  Title
+     *  XMP - dc:title
+     *  Exif 37510 UserComment
+     *  Exif 270 - Description
+     *  XMP - dc:description
+     *  IPTC IIM - Caption
+     *  XMP - exif:UserComment
+     *
+     *  Subject	?
+     *  Date taken
+     *  Exif 36867 - DateTimeOriginal
+     *  IPTC IIM - Date Taken
+     *  XMP - xmp:CreateDate
+     *  Exif 36868 - Digitization Date/Time
+     *  Exif - Original Date/Time
+     *  Rating	XMP - xmp:rating
+     *  Size	Exif
+     *
+     *  Date created
+     *  XMP - exif:DateTimeOriginal
+     *
+     *  Date modified	xmp:ModifyDate
+     *
+     *  Comments
+     *  Exif 40092 - XPComment
+     *  Exif 37510 - UserComment
+     *  XMP - exif:UserComment
+     *
+     *  Camera maker
+     *  Exif 271 - Make
+     *  XMP - tiff:Make
+     *
+     *  Camera model
+     *  Exif 272 - Camera Model
+     *  XMP - tiff:Model
+     *  XMP - xmp:CreatorTool
+     *
+     *  Copyright
+     *  Exif 33432 - Copyright
+     *  IPTC IIM - copyright notice
+     *  XMP - xmp:dc.rights
+     *
+     *  f stop	Exif Sub IFD - Lens F-Number
+     *  Exposure time	Exif Sub IFD - Exposure Time
+     */
 
     /**
      * getFiles
