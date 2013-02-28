@@ -144,67 +144,6 @@ class mmThumbs {
     }
 
 
-    /*
-      $xmp_parsed = ee_extract_exif_from_pscs_xmp ("CRW_0016b_preview.jpg",1);
-
-      function ee_extract_exif_from_pscs_xmp ($filename,$printout=0) {
-
-      // very straightforward one-purpose utility function which
-      // reads image data and gets some EXIF data (what I needed) out from its XMP tags (by Adobe Photoshop CS)
-      // returns an array with values
-      // code by Pekka Saarinen http://photography-on-the.net
-
-      ob_start();
-      readfile($filename);
-      $source = ob_get_contents();
-      ob_end_clean();
-
-      $xmpdata_start = strpos($source,"<x:xmpmeta");
-      $xmpdata_end = strpos($source,"</x:xmpmeta>");
-      $xmplenght = $xmpdata_end-$xmpdata_start;
-      $xmpdata = substr($source,$xmpdata_start,$xmplenght+12);
-
-      $xmp_parsed = array();
-
-      $regexps = array(
-      array("name" => "DC creator", "regexp" => "/<dc:creator>\s*<rdf:Seq>\s*<rdf:li>.+<\/rdf:li>\s*<\/rdf:Seq>\s*<\/dc:creator>/"),
-      array("name" => "TIFF camera model", "regexp" => "/<tiff:Model>.+<\/tiff:Model>/"),
-      array("name" => "TIFF maker", "regexp" => "/<tiff:Make>.+<\/tiff:Make>/"),
-      array("name" => "EXIF exposure time", "regexp" => "/<exif:ExposureTime>.+<\/exif:ExposureTime>/"),
-      array("name" => "EXIF f number", "regexp" => "/<exif:FNumber>.+<\/exif:FNumber>/"),
-      array("name" => "EXIF aperture value", "regexp" => "/<exif:ApertureValue>.+<\/exif:ApertureValue>/"),
-      array("name" => "EXIF exposure program", "regexp" => "/<exif:ExposureProgram>.+<\/exif:ExposureProgram>/"),
-      array("name" => "EXIF iso speed ratings", "regexp" => "/<exif:ISOSpeedRatings>\s*<rdf:Seq>\s*<rdf:li>.+<\/rdf:li>\s*<\/rdf:Seq>\s*<\/exif:ISOSpeedRatings>/"),
-      array("name" => "EXIF datetime original", "regexp" => "/<exif:DateTimeOriginal>.+<\/exif:DateTimeOriginal>/"),
-      array("name" => "EXIF exposure bias value", "regexp" => "/<exif:ExposureBiasValue>.+<\/exif:ExposureBiasValue>/"),
-      array("name" => "EXIF metering mode", "regexp" => "/<exif:MeteringMode>.+<\/exif:MeteringMode>/"),
-      array("name" => "EXIF focal lenght", "regexp" => "/<exif:FocalLength>.+<\/exif:FocalLength>/"),
-      array("name" => "AUX lens", "regexp" => "/<aux:Lens>.+<\/aux:Lens>/")
-      );
-
-      foreach ($regexps as $key => $k) {
-      $name         = $k["name"];
-      $regexp     = $k["regexp"];
-      unset($r);
-      preg_match ($regexp, $xmpdata, $r);
-      $xmp_item = "";
-      $xmp_item = @$r[0];
-      array_push($xmp_parsed,array("item" => $name, "value" => $xmp_item));
-      }
-
-      if ($printout == 1) {
-      foreach ($xmp_parsed as $key => $k) {
-      $item         = $k["item"];
-      $value         = $k["value"];
-      print "<br><b>" . $item . ":</b> " . $value;
-      }
-      }
-
-      return ($xmp_parsed);
-
-      }
-     */
-
     /**
      * get Hash
      *
@@ -255,11 +194,37 @@ class mmThumbs {
                 $data['copyright'] .= (isset( $ifd0['Copyright'] )) ? ' - ' . $ifd0['Copyright'] : null;
 
                 $data['tags']              = (isset( $ifd0['Keywords'] )) ? $ifd0['Keywords'] : null;
-                $data['xmp']               = html_encode( self::xmp_read_block( $file ) );
             }
             $data['original_filename'] = pathinfo( $file, PATHINFO_FILENAME );
             $data['width']             = (isset( $exif_data['COMPUTED']['Width'] )) ? $exif_data['COMPUTED']['Width'] : null;
             $data['height']            = (isset( $exif_data['COMPUTED']['Height'] )) ? $exif_data['COMPUTED']['Height'] : null;
+        }
+
+        if ( $try_xmp && ($xmp_data = self::xmp_read_block( $file )) ) {
+
+            $xmp_data = str_replace( ':', '_', $xmp_data );
+            libxml_use_internal_errors( false );
+            $sxe      = new SimpleXMLElement( $xmp_data );
+            if ( $sxe !== false ) {
+                $tags         = $sxe->xpath( '//dc_subject/rdf_Bag' );
+                if ( !empty( $tags ) )
+                    $data['tags'] = (array) $tags[0]->rdf_li;
+                    $data['tags'] = implode(', ', $data['tags']);
+
+                $description         = $sxe->xpath( '//dc_description/rdf_Alt' );
+                if ( !empty( $description ) )
+                    $data['description'] = (string) $description[0]->rdf_li;
+
+                $title         = $sxe->xpath( '//dc_title/rdf_Alt' );
+                if ( !empty( $title ) )
+                    $data['title'] = (string) $title[0]->rdf_li;
+
+                $copyright         = $sxe->xpath( '//dc_rights/rdf_Alt' );
+                $creator           = $sxe->xpath( '//dc_creator/rdf_Seq' );
+                $data['copyright'] = (string) $copyright[0]->rdf_li;
+                if ( !empty( $creator ) )
+                    $data['copyright'] .= ' - ' . (string) $creator[0]->rdf_li;
+            }
         }
         return $data;
 
